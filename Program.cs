@@ -1,83 +1,101 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class POSTMANAGEMENTSYSTEM
+namespace POSTMANAGEMENTSYSTEM
 {
-    static List<string> posts = new List<string>();
-    
-    static string studnum = "00065";
-    static string userInput, postmenu, postinput, postprivacy, postconfirm,found;
+	public class Post
+	{
+		public string Content { get; set; }
+		public DateTime Date { get; set; }
+		public string Status { get; set; }
+		public string ImageUrl { get; set; }
+	}
 
-    public static void Main(String[]args)
-    {
-        System.Console.WriteLine("Welcome to PUPHUB Posts & Bulletin Board!");
-        System.Console.WriteLine("-----------------------------------------");
-        System.Console.WriteLine();
+	public class Program
+	{
+		public static List<Post> posts = new List<Post>();
 
-        System.Console.Write("Please enter your student number: ");
-        userInput = Console.ReadLine();
+		static void Main(string[] args)
+		{
+			bool running = true;
 
-        while(userInput != "3")
-        {
+			while (running)
+			{
+				Console.WriteLine("1. Create a new post");
+				Console.WriteLine("2. View all posts");
+				Console.WriteLine("3. Exit");
 
-        if(userInput == studnum)
-        {
-            System.Console.WriteLine();
-            System.Console.WriteLine("Press 1 to create a post.");
-            System.Console.WriteLine("Press 2 to view all posts.");
-            System.Console.WriteLine("Press 3 to exit program.");
-            postmenu = Console.ReadLine();
+				Console.Write("Enter your choice: ");
+				string choice = Console.ReadLine();
 
-            if(postmenu == "1")
-            {
-                System.Console.WriteLine();
-                System.Console.WriteLine("What's on your mind?");
-                postinput = Console.ReadLine();
+				switch (choice)
+				{
+					case "1":
+						CreatePost();
+						break;
+					case "2":
+						ViewPosts();
+						break;
+					case "3":
+						running = false;
+						break;
+					default:
+						Console.WriteLine("Invalid choice. Please try again.");
+						break;
+				}
 
-                System.Console.WriteLine();
-                System.Console.WriteLine("Do you want your post to be public or private?");
-                postprivacy = Console.ReadLine();
+				Console.WriteLine();
+			}
+		}
 
-                System.Console.WriteLine();
-                System.Console.WriteLine("Post Confirmation");
-                System.Console.WriteLine("Press y to post");
-                System.Console.WriteLine("Press n to cancel");
-                System.Console.WriteLine();
-                postconfirm =  Console.ReadLine();
+		static void CreatePost()
+		{
+			Console.Write("Enter the post content: ");
+			string content = Console.ReadLine();
 
-                if(postconfirm == "y")
-                {
-                    posts.Add(postinput);
-                    System.Console.WriteLine("Status Updated!");
-                    System.Console.WriteLine();
-                }
-                else
-                {
-                    System.Console.WriteLine("Post cancelled.");
-                }
-            }
-            else if(postmenu == "2")
-            {
-                foreach(var post in posts)
-                {
-                    System.Console.WriteLine();
-                    System.Console.Write("Posted: ");
-                    System.Console.WriteLine(post);
-                }
-            }
-            else if(postmenu == "3")
-            {
-                System.Console.WriteLine("Exiting Program.");
-                break;
-            }
-        }
-        else
-        {
-            System.Console.WriteLine();
-            System.Console.WriteLine("This account does not exist. Exiting program");
-            break;
-        }
+			Console.Write("Enter the post status: ");
+			string status = Console.ReadLine();
 
-        }
-    }
+			Console.Write("Enter the post date (yyyy-MM-dd): ");
+			if (!DateTime.TryParse(Console.ReadLine(), out DateTime date))
+			{
+				Console.WriteLine("Invalid date format. Post creation canceled.");
+				return;
+			}
+
+			Console.Write("Enter the image URL (leave blank for no image): ");
+			string imageUrl = Console.ReadLine();
+
+			Post newPost = new Post
+			{
+				Content = content,
+				Date = date,
+				Status = status,
+				ImageUrl = imageUrl
+			};
+
+			posts.Add(newPost);
+
+			Console.WriteLine("Post created successfully!");
+		}
+
+		static void ViewPosts()
+		{
+			if (posts.Count == 0)
+			{
+				Console.WriteLine("No posts found.");
+				return;
+			}
+
+			Console.WriteLine("All Posts:");
+			foreach (var post in posts)
+			{
+				Console.WriteLine($"Content: {post.Content}");
+				Console.WriteLine($"Status: {post.Status}");
+				Console.WriteLine($"Date: {post.Date.ToString("yyyy-MM-dd")}");
+				Console.WriteLine($"Image URL: {post.ImageUrl}");
+				Console.WriteLine();
+			}
+		}
+	}
 }
